@@ -1,0 +1,86 @@
+import requests
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+url = 'https://files.datapress.com/london/dataset/number-bicycle-hires/2017-05-09T13:54:35.44/tfl-daily-cycle-hires.xls'
+r = requests.get(url)
+
+filename = 'tfl-daily-cycle-hires.xls'
+
+output = open(filename, 'wb')
+output.write(r.content)
+output.close()
+
+dfDay = pd.read_excel(filename, sheetname='Data',parse_cols = "A,B")
+dfMonth = pd.read_excel(filename, sheetname='Data',parse_cols = "D,E")
+dfMonth = dfMonth[np.isfinite(dfMonth['Number of Bicycle Hires'])]
+dfYear = pd.read_excel(filename, sheetname='Data',parse_cols = "G,H")
+dfYear = dfYear['Number of Bicycle Hires'][0:9]
+# dfMonthAvgTime = pd.read_excel(filename, sheetname='Data',parse_cols = "J,K")
+# dfMonthAvgTime = dfMonthAvgTime[np.isfinite(dfMonthAvgTime['Average Hire Time (mins)'])]
+
+# Plot monthly cycling numbers
+plt.figure(figsize=(12,10))
+sns.pointplot(x=dfMonth['Month'].dt.month, y = dfMonth['Number of Bicycle Hires'], hue=dfMonth['Month'].dt.year)
+plt.ylabel('Number of Bicycle Hires')
+plt.xlabel('Month')
+plt.ylim([0,1400000])
+plt.title('Monthly TfL Cycle Hire Data (Source: TfL)')
+
+# Boxplot of cycling numbers grouped by month, so we can see outliers like the tube strike in July 2015, and the heatwave and Western Extension in March 2012.
+plt.figure(figsize=(12,10))
+sns.boxplot(x=dfDay['Day'].dt.month, y = dfDay['Number of Bicycle Hires'], hue=dfDay['Day'].dt.year)
+plt.ylabel('Number of Bicycle Hires')
+plt.xlabel('Month')
+plt.title('Boxplot of Daily TfL Cycle Hire Data (Source: TfL)')
+
+def collapse_df_columns(df):
+    df2 = pd.DataFrame()
+    for column in df:
+        df2=pd.concat([df2,df[column]])
+        df2.replace(-999.25, np.nan, inplace=True)
+        df2.dropna(inplace=True)
+    return df2.reset_index(drop=True)
+    
+# Temp data source:http://nw3weather.co.uk/wxdataday.php?vartype=tmax&year=2016
+# Ideally would scrape this using BeautifulSoup but is difficult . To do.
+
+# Load temps into dataframes
+Temp_2010 = pd.read_excel('Temps.xlsx', sheetname='2010')
+Temp_2010 = collapse_df_columns(Temp_2010)
+Temp_2010.columns=['2010']
+Temp_2011 = pd.read_excel('Temps.xlsx', sheetname='2011')
+Temp_2011 = collapse_df_columns(Temp_2011)
+Temp_2011.columns=['2011']
+Temp_2012 = pd.read_excel('Temps.xlsx', sheetname='2012')
+Temp_2012 = collapse_df_columns(Temp_2012)
+Temp_2012.columns=['2012']
+Temp_2013 = pd.read_excel('Temps.xlsx', sheetname='2013')
+Temp_2013 = collapse_df_columns(Temp_2013)
+Temp_2013.columns=['2013']
+Temp_2014 = pd.read_excel('Temps.xlsx', sheetname='2014')
+Temp_2014 = collapse_df_columns(Temp_2014)
+Temp_2014.columns=['2014']
+Temp_2015 = pd.read_excel('Temps.xlsx', sheetname='2015')
+Temp_2015 = collapse_df_columns(Temp_2015)
+Temp_2015.columns=['2015']
+Temp_2016 = pd.read_excel('Temps.xlsx', sheetname='2016')
+Temp_2016 = collapse_df_columns(Temp_2016)
+Temp_2016.columns=['2016']
+Temp_2017 = pd.read_excel('Temps.xlsx', sheetname='2017')
+Temp_2017 = collapse_df_columns(Temp_2017)
+Temp_2017.columns=['2017']
+
+# Combine temps into single table
+MaxTemps_all = pd.concat([Temp_2010,Temp_2011,Temp_2012,Temp_2013,Temp_2014,Temp_2015,Temp_2016,Temp_2017],axis=1)
+MaxTemps_all = collapse_df_columns(MaxTemps_all)   
+
+# Append max. temps onto df
+dfDay['MaxTemp'] = MaxTemps_all
+dfDay['Year'] = dfDay['Day'].dt.year
+
+# Plot
+sns.lmplot(x='MaxTemp',y='Number of Bicycle Hires',data=dfDay,col='Year',hue='Year',aspect=.8)
+plt.show()
