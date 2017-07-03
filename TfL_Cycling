@@ -26,7 +26,7 @@ plt.figure(figsize=(12,10))
 sns.pointplot(x=dfMonth['Month'].dt.month, y = dfMonth['Number of Bicycle Hires'], hue=dfMonth['Month'].dt.year)
 plt.ylabel('Number of Bicycle Hires')
 plt.xlabel('Month')
-plt.ylim([0,1400000])
+plt.ylim([0,1.1*np.max(dfMonth['Number of Bicycle Hires'])+50000/100000*100000])
 plt.title('Monthly TfL Cycle Hire Data (Source: TfL)')
 
 # Boxplot of cycling numbers grouped by month, so we can see outliers like the tube strike in July 2015, and the heatwave and Western Extension in March 2012.
@@ -45,7 +45,7 @@ def collapse_df_columns(df):
     return df2.reset_index(drop=True)
     
 # Temp data source:http://nw3weather.co.uk/wxdataday.php?vartype=tmax&year=2016
-# Ideally would scrape this using BeautifulSoup but is difficult . To do.
+# Ideally would scrape this using BeautifulSoup but is proving difficult. On the 'to do' list.
 
 # Load temps into dataframes
 Temp_2010 = pd.read_excel('Temps.xlsx', sheetname='2010')
