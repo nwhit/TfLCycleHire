@@ -1,0 +1,80 @@
+import requests
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import calendar
+
+#Download the requested file and load as CSV. Print comment when finished.
+def get_TFL_data_file(url):
+    r = requests.get(url)
+    filename = url[43:]
+    output = open(filename, 'wb')
+    output.write(r.content)
+    output.close()
+    df = pd.read_csv(filename)
+    print('%s downloaded and extracted\n'%(filename))
+    return df
+
+# Calculate the number of days of data in the CSV file, based on filename. Needed to normalise data due to irregular sampling. Not exactly accurate due to weekend bias.
+def get_nDays(url):
+    month_dict = {'Jan':1, 'Feb':2, 'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12 }
+    if url[-11:-8]==url[-21:-18]:
+        nDays = int(url[-13:-11])-int(url[-23:-21])
+    else:
+        nDays = int(url[-13:-11]) + (calendar.monthrange(2017,month_dict[url[-21:-18]])[1] - int(url[-23:-21])) + 1
+    return nDays
+
+# Create dataframes and add the first file to them 
+def get_first_df(url):
+    df = get_TFL_data_file(url)
+    nDays=get_nDays(url)
+    df2=df['StartStation Name'].value_counts().to_frame()/nDays
+    df2.columns = [url[-23:-4]]
+    df3=df['EndStation Name'].value_counts().to_frame()/nDays
+    df3.columns = [url[-23:-4]]
+    return df2, df3
+    
+dfStart, dfStop = get_first_df ('http://cycling.data.tfl.gov.uk/usage-stats/51%20Journey%20Data%20Extract%2029Mar2017-04Apr2017.csv')   
+
+# Append additional data files to the dataframes
+def append_new_data_onto_df(url,df2,df3):
+    df = get_TFL_data_file(url)
+    nDays=get_nDays(url)
+    df2[url[-23:-4]] = df['StartStation Name'].value_counts().to_frame()/nDays
+    df3[url[-23:-4]] = df['EndStation Name'].value_counts().to_frame()/nDays
+    return df2, df3
+
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/52%20Journey%20Data%20Extract%2005Apr2017-11Apr2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/53JourneyDataExtract12Apr2017-18Apr2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/54JourneyDataExtract19Apr2017-25Apr2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/55JourneyData%20Extract26Apr2017-02May2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/56JourneyDataExtract%2003May2017-09May2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/57JourneyDataExtract10May2017-16May2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/58JourneyDataExtract17May2017-23May2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/59JourneyDataExtract24May2017-30May2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/60JourneyDataExtract31May2017-06Jun2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/61JourneyDataExtract07Jun2017-13Jun2017.csv',dfStart,dfStop)   
+dfStart, dfStop = append_new_data_onto_df ('http://cycling.data.tfl.gov.uk/usage-stats/62JourneyDataExtract14Jun2017-20Jun2017.csv',dfStart,dfStop)   
+
+# Plot the top N stations
+def plot_df_head(df,nStations):
+    df1 = df.head(20).transpose().reset_index()
+    df1.head(nStations).plot(figsize=(15,10))
+    df.mean().plot(label='Mean')
+    df.median().plot(label='Median')
+    plt.xticks(rotation=45)
+    plt.minorticks_on()
+    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+    plt.show()
+
+dfStartStop = dfStart + dfStop
+dfStartStopSrt = dfStartStop.sort(dfStartStop.columns[-4],ascending=False)
+plot_df_head(dfStartStopSrt,20)
+
+#Query: How many Start/End activities were in Hyde Park?
+def df_station_query(df, string):
+    print ('Extract of df for stations that contain: %s:' %(string))
+    print(df[df.index.str.contains(string)].sum())
+   
+df_station_query(dfStop, 'Hyde Park')
