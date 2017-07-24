@@ -1,0 +1,207 @@
+import requests
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import calendar
+
+#Download the requested file and load as CSV. Print comment when finished.
+def GetTFLDataFile(url):
+    r = requests.get(url)
+    filename = url[43:]
+    output = open(filename, 'wb')
+    output.write(r.content)
+    output.close()
+    if url[-4:] == '.csv':
+        df = pd.read_csv(filename)
+    else:
+        df = pd.read_excel(filename)
+    print('%s downloaded and extracted\n'%(filename))
+    df['Start Date'] = pd.to_datetime(df['Start Date'],yearfirst=True,dayfirst=True)
+    df['Start Date'] = pd.to_datetime(df['Start Date'],yearfirst=True,dayfirst=True)
+    return df
+
+def AppendNewDataFile(dfMaster,url):
+    r = requests.get(url)
+    filename = url[43:]
+    output = open(filename, 'wb')
+    output.write(r.content)
+    output.close()
+    if url[-4:] == '.csv':
+        df = pd.read_csv(filename)
+    else:
+        df = pd.read_excel(filename)
+    print('%s downloaded and extracted\n'%(filename))
+    df['Start Date'] = pd.to_datetime(df['Start Date'],yearfirst=True,dayfirst=True)
+    df['Start Date'] = pd.to_datetime(df['Start Date'],yearfirst=True,dayfirst=True)
+    return dfMaster.append(df)   
+
+
+
+dfMaster = GetTFLDataFile('http://cycling.data.tfl.gov.uk/usage-stats/1a.JourneyDataExtract04Jan15-17Jan15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/1b.JourneyDataExtract18Jan15-31Jan15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/2a.JourneyDataExtract01Feb15-14Feb15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/2b.JourneyDataExtract15Feb15-28Feb15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/3a.JourneyDataExtract01Mar15-15Mar15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/3b.JourneyDataExtract16Mar15-31Mar15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/4a.JourneyDataExtract01Apr15-16Apr15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/4b.JourneyDataExtract%2017Apr15-02May15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/5a.JourneyDataExtract03May15-16May15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/5b.JourneyDataExtract17May15-30May15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/6aJourneyDataExtract31May15-12Jun15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/6bJourneyDataExtract13Jun15-27Jun15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/7a.JourneyDataExtract28Jun15-11Jul15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/7b.JourneyDataExtract12Jul15-25Jul15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/8a-Journey-Data-Extract-26Jul15-07Aug15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/8b-Journey-Data-Extract-08Aug15-22Aug15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/9a-Journey-Data-Extract-23Aug15-05Sep15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/9b-Journey-Data-Extract-06Sep15-19Sep15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/10a-Journey-Data-Extract-20Sep15-03Oct15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/10b-Journey-Data-Extract-04Oct15-17Oct15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/11a-Journey-Data-Extract-18Oct15-31Oct15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/11b-Journey-Data-Extract-01Nov15-14Nov15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/12aJourneyDataExtract15Nov15-27Nov15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/12bJourneyDataExtract28Nov15-12Dec15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/13aJourneyDataExtract13Dec15-24Dec15.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/13bJourneyDataExtract25Dec15-09Jan16.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/01aJourneyDataExtract10Jan16-23Jan16.csv')
+
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/01b%20Journey%20Data%20Extract%2024Jan16-06Feb16.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/01bJourneyDataExtract24Jan16-06Feb16.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/02aJourneyDataExtract07Fe16-20Feb2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/02bJourneyDataExtract21Feb16-05Mar2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/03JourneyDataExtract06Mar2016-31Mar2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/04JourneyDataExtract01Apr2016-30Apr2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/05JourneyDataExtract01May2016-17May2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/06JourneyDataExtract18May2016-24May2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/07JourneyDataExtract25May2016-31May2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/08JourneyDataExtract01Jun2016-07Jun2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/09JourneyDataExtract08Jun2016-14Jun2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/10JourneyDataExtract15Jun2016-21Jun2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/11JourneyDataExtract22Jun2016-28Jun2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/12JourneyDataExtract29Jun2016-05Jul2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/13JourneyDataExtract06Jul2016-12Jul2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/14JourneyDataExtract13Jul2016-19Jul2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/15JourneyDataExtract20Jul2016-26Jul2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/16JourneyDataExtract27Jul2016-02Aug2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/17JourneyDataExtract03Aug2016-09Aug2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/18JourneyDataExtract10Aug2016-16Aug2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/19JourneyDataExtract17Aug2016-23Aug2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/20JourneyDataExtract24Aug2016-30Aug2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/21JourneyDataExtract31Aug2016-06Sep2016.csv') #This one has additional junk columns
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/23JourneyDataExtract14Sep2016-20Sep2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/24JourneyDataExtract21Sep2016-27Sep2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/25JourneyDataExtract28Sep2016-04Oct2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/26JourneyDataExtract05Oct2016-11Oct2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/27JourneyDataExtract12Oct2016-18Oct2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/28JourneyDataExtract19Oct2016-25Oct2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/29JourneyDataExtract26Oct2016-01Nov2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/30JourneyDataExtract02Nov2016-08Nov2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/31JourneyDataExtract09Nov2016-15Nov2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/32JourneyDataExtract16Nov2016-22Nov2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/33JourneyDataExtract23Nov2016-29Nov2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/34JourneyDataExtract30Nov2016-06Dec2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/35JourneyDataExtract07Dec2016-13Dec2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/36JourneyDataExtract14Dec2016-20Dec2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/37JourneyDataExtract21Dec2016-27Dec2016.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/38JourneyDataExtract28Dec2016-03Jan2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/39JourneyDataExtract04Jan2017-10Jan2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/40JourneyDataExtract11Jan2017-17Jan2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/41JourneyDataExtract18Jan2017-24Jan2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/42JourneyDataExtract25Jan2017-31Jan2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/43JourneyDataExtract01Feb2017-07Feb2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/44JourneyDataExtract08Feb2017-14Feb2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/45JourneyDataExtract15Feb2017-21Feb2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/46JourneyDataExtract22Feb2017-28Feb2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/47JourneyDataExtract01Mar2017-07Mar2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/48JourneyDataExtract08Mar2017-14Mar2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/49JourneyDataExtract15Mar2017-21Mar2017.xlsx')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/50%20Journey%20Data%20Extract%2022Mar2017-28Mar2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/51%20Journey%20Data%20Extract%2029Mar2017-04Apr2017.csv') 
+
+del dfMaster['StartStation Logical Terminal']
+del dfMaster['endStationPriority_id']
+del dfMaster['Unnamed: 9']
+del dfMaster['Unnamed: 10']
+del dfMaster['Unnamed: 11']
+del dfMaster['EndStation Logical Terminal']
+
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/52%20Journey%20Data%20Extract%2005Apr2017-11Apr2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/53JourneyDataExtract12Apr2017-18Apr2017.csv')   
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/54JourneyDataExtract19Apr2017-25Apr2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/55JourneyData%20Extract26Apr2017-02May2017.csv')   
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/56JourneyDataExtract%2003May2017-09May2017.csv')  
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/57JourneyDataExtract10May2017-16May2017.csv')   
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/58JourneyDataExtract17May2017-23May2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/59JourneyDataExtract24May2017-30May2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/60JourneyDataExtract31May2017-06Jun2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/61JourneyDataExtract07Jun2017-13Jun2017.csv')  
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/62JourneyDataExtract14Jun2017-20Jun2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/63JourneyDataExtract21Jun2017-27Jun2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/64JourneyDataExtract28Jun2017-04Jul2017.csv')
+dfMaster = AppendNewDataFile(dfMaster,'http://cycling.data.tfl.gov.uk/usage-stats/65JourneyDataExtract05Jul2017-11Jul2017.csv')
+
+
+dfMaster.set_index('Rental Id')
+#dfMaster['Start Date'] = pd.to_datetime(dfMaster['Start Date'])
+#%timeit dfMaster['End Date'] = pd.to_datetime(dfMaster['End Date'])
+
+#dfTest = dfMaster.head(2400000)
+#%timeit dfTest['End Date'] = pd.to_datetime(dfTest['End Date'])
+
+#Query: How many Start/End activities were in Hyde Park?
+def df_station_query(dfMaster, stationstring, Month, Year):
+    dfYear = dfMaster[dfMaster['Start Date'].dt.year==Year]
+    df = dfYear[dfYear['Start Date'].dt.month==Month]
+    nStarts = df['StartStation Name'].str.contains(stationstring).sum()
+    nStarts_p = 100.0* nStarts/len(df)
+    nEnds = df['EndStation Name'].str.contains(stationstring).sum()
+    nEnds_p = 100.0* nEnds/len(df)
+    print ('Number of entries in df that contain %s:' %(stationstring))
+    print('Starts: %i (%.2f%%)' %(nStarts, nStarts_p))
+    print('Ends: %i(%.2f%%)' %(nEnds, nEnds_p))
+    return nStarts+nEnds
+
+MonthArray = np.array([5,6,7,8,9,10,11,12,1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6])
+YearArray = np.array([2015,2016,2017])
+HPArray = np.zeros_like(MonthArray)
+TotalArray = np.zeros_like(MonthArray)
+i=0
+for Year in YearArray:
+    for Month in MonthArray:
+        HPArray[i], TotalArray[i]=df_station_query(dfMaster, 'Hyde Park', Month, Year)
+        i+=1
+
+x=df_station_query(dfMaster, 'Hyde Park', 4, 2016)
+df_station_query(dfMaster, 'Waterloo', 2016)
+
+def dfMonthYearQuery(df,Month,Year):
+    dfYear = dfMaster[dfMaster['Start Date'].dt.year==Year]
+    dfYearMonth = dfYear[dfYear['Start Date'].dt.month==Month]
+    return len(dfYearMonth)
+
+dfMonthYearQuery(dfMaster,6,2017)
+
+#df2016 = dfMaster[dfMaster['Start Date'].dt.year==2016]
+#dfJune2017 =df2017[df2017['Start Date'].dt.month==6] 
+
+#busiest docks in 2016 and 17
+(df2016['StartStation Name'].value_counts() + df2016['EndStation Name'].value_counts()).nlargest(15)
+(df2017['StartStation Name'].value_counts() + df2017['EndStation Name'].value_counts()).nlargest(15)
+
+
+#dfTest = GetTFLDataFile('http://cycling.data.tfl.gov.uk/usage-stats/65JourneyDataExtract05Jul2017-11Jul2017.csv')
+#dfTest['Start Date'] = pd.to_datetime(dfTest['Start Date'],yearfirst=True,dayfirst=True)
+
+plt.figure(figsize=(12,10))
+ax=sns.countplot(y=dfMaster['Start Date'].dt.dayofweek, hue=dfMaster['Start Date'].dt.year, palette="Greens_d");
+ax.set_xlabel('Cycle hires',fontsize=16)
+ax.set_ylabel('Day of the week over the week',fontsize=16)
+ax.set_title('Cycle hire distribution (as of 11 July 2017)',fontsize=16)
+ax.set_yticklabels(['M','T','W','T','F','S','S'],fontsize=16)
+    
+#Save the db
+dfMaster.to_pickle('tfl_cycling_db')
+dfMaster = pd.read_pickle('tfl_cycling_db')
+
+

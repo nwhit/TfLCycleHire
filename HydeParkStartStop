@@ -1,0 +1,87 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#How many people cycle in Hyde Park as percentage of overall?
+
+dfMaster = pd.read_pickle('tfl_cycling_db')
+
+def dfStationQueryCircle(dfMaster, stationstring, Month, Year):
+    dfYear = dfMaster[dfMaster['Start Date'].dt.year==Year]
+    dfYearMonth = dfYear[dfYear['Start Date'].dt.month==Month]
+    df1 = dfYearMonth[dfYearMonth['EndStation Name'].str.contains(stationstring) == True]
+    df2 = df1[df1['StartStation Name'].str.contains(stationstring) == True]
+    return len(df2), len(dfYearMonth)
+    
+def dfStationQuery(dfMaster, stationstring, Month, Year):
+    dfYear = dfMaster[dfMaster['Start Date'].dt.year==Year]
+    df = dfYear[dfYear['Start Date'].dt.month==Month]
+    nStarts = df['StartStation Name'].str.contains(stationstring).sum()
+    nStarts_p = 100.0* nStarts/len(df)
+    nEnds = df['EndStation Name'].str.contains(stationstring).sum()
+    nEnds_p = 100.0* nEnds/len(df)
+    print ('Number of entries in df that contain %s:' %(stationstring))
+    print('Starts: %i (%.2f%%)' %(nStarts, nStarts_p))
+    print('Ends: %i(%.2f%%)' %(nEnds, nEnds_p))
+    return nStarts+nEnds, len(df)
+
+Array2015 = np.array([5,6,7,8,9,10,11,12])
+HPArray2015 = np.zeros_like(Array2015)
+TotalArray2015 = np.zeros_like(Array2015)
+HPArray2015C = np.zeros_like(Array2015)
+TotalArray2015C = np.zeros_like(Array2015)
+Array2016 = np.array([1,2,3,4,5,6,7,8,9,10,11,12])
+HPArray2016 = np.zeros_like(Array2016)
+TotalArray2016 = np.zeros_like(Array2016)
+HPArray2016C = np.zeros_like(Array2016)
+TotalArray2016C = np.zeros_like(Array2016)
+Array2017 = np.array([1,2,3,4,5,6])
+HPArray2017 = np.zeros_like(Array2017)
+TotalArray2017 = np.zeros_like(Array2017)
+HPArray2017C = np.zeros_like(Array2017)
+TotalArray2017C= np.zeros_like(Array2017)
+i=0
+for Month in Array2015:
+        HPArray2015[i], TotalArray2015[i]=dfStationQuery(dfMaster, 'Hyde Park', Month, 2015)
+        HPArray2015C[i], TotalArray2015C[i]=dfStationQueryCircle(dfMaster, 'Hyde Park', Month, 2015)
+        i+=1
+i=0
+for Month in Array2016:
+        HPArray2016[i], TotalArray2016[i]=dfStationQuery(dfMaster, 'Hyde Park', Month, 2016)
+        HPArray2016C[i], TotalArray2016C[i]=dfStationQueryCircle(dfMaster, 'Hyde Park', Month, 2016)
+        i+=1
+i=0
+for Month in Array2017:
+        HPArray2017[i], TotalArray2017[i]=dfStationQuery(dfMaster, 'Hyde Park', Month, 2017)
+        HPArray2017C[i], TotalArray2017C[i]=dfStationQueryCircle(dfMaster, 'Hyde Park', Month, 2017)
+        i+=1
+        
+HPArray2015PCTStartEnd = 100.0* (HPArray2015 / (2.0*TotalArray2015))
+HPArray2016PCTStartEnd = 100.0* (HPArray2016 / (2.0*TotalArray2016))
+HPArray2017PCTStartEnd = 100.0* (HPArray2017 / (2.0*TotalArray2017))
+HPArray2015PCT_C = 100.0* (HPArray2015C / (1.0*TotalArray2015C))
+HPArray2016PCT_C = 100.0* (HPArray2016C / (1.0*TotalArray2016C))
+HPArray2017PCT_C = 100.0* (HPArray2017C / (1.0*TotalArray2017C))
+
+plt.figure(figsize=(15,10))
+plt.plot(Array2015,HPArray2015PCTStartEnd,label='2015 Start or End',color='green',alpha=0.6)
+plt.plot(Array2016,HPArray2016PCTStartEnd,label='2016 Start or End',color='blue',alpha=0.6)
+plt.plot(Array2017,HPArray2017PCTStartEnd,label='2017 Start or End',color='red',alpha=0.6)
+plt.plot(Array2015,HPArray2015PCT_C,color='green',label='2015 Start and End',ls='dashed',alpha=0.6)
+plt.plot(Array2016,HPArray2016PCT_C,color='blue',label='2016 Start and End',ls='dashed',alpha=0.6)
+plt.plot(Array2017,HPArray2017PCT_C,color='red',label='2017 Start and End',ls='dashed',alpha=0.6)
+plt.ylabel('Hyde Park Activities / Total Activities',fontsize=16)
+plt.xlabel('Month',fontsize=16)
+plt.xlim([1,12])
+plt.title('Cycle Hire Activities in Hyde Park as a Percentage of all Cycle Hire Activities (May15 - Jun17)')
+plt.legend()
+
+dfStationQueryCircle(dfMaster,'Hyde Park', 4,2017)
+
+df2017 = dfMaster[dfMaster['Start Date'].dt.year==2017]
+stationstring = 'Hyde Park'
+df = df2017
+
+df1 = df[df['EndStation Name'].str.contains(stationstring) == True]
+df2 = df1[df1['StartStation Name'].str.contains(stationstring) == True]
+len(df2)
+[df['EndStation Name'].str.contains(stationstring)].sum()
